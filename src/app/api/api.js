@@ -69,6 +69,7 @@ export async function searchEvents(title) {
 
 export function logout() {
     localStorage.removeItem('authToken')
+    localStorage.removeItem('authUserName')
 }
 
 export async function login(username , password){
