@@ -76,7 +76,7 @@ export async function login(username , password){
     try {
         const res = await axios.post(`${BASE_URL}/auth/login/` , {username , password})
         localStorage.setItem('authToken' , res.data.token)
-        return res.data.username
+        localStorage.setItem('authUserName' , username)
     }
     catch (err) {
         console.error("Failed to login." , err)
