@@ -31,7 +31,7 @@ export default function NewEvent() {
             
             <h2 className="text-white text-3xl">Create New Event</h2>
 
-            <form className="bg-slate-800 rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3" onSubmit={handleSubmit}>
+            <form className="bg-slate-800 rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3 text-gray-400" onSubmit={handleSubmit}>
                 <input type="text" name="title" placeholder="Title" className="w-full p-2 rounded" required/>
                 <input type="text" name="description" placeholder="Description" className="w-full p-2 rounded" required/>
                 <input type="text" name="venue" placeholder="Venue" className="w-full p-2 rounded"required />
