@@ -41,7 +41,7 @@ export default function EventCard({ event, onDelete }) {
     }
 
   return (
-    <div className="relative">
+    <div className="relative text-gray-400">
       {/* Buttons */}
       <div className="absolute top-3 right-3 flex gap-2 z-10">
         <button onClick={(e) => {e.preventDefault();e.stopPropagation(); console.log("Edit:", event.id); handleEdit(event.id)}} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
