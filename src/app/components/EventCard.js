@@ -5,7 +5,7 @@ import Image from "next/image"
 import { deleteEvent } from "../api/api"
 import { useRouter } from "next/navigation"
 
-export default function EventCard({ event }) {
+export default function EventCard({ event, onDelete }) {
 
     const current_date = new Date()
     const event_date = new Date(event.date)
@@ -27,7 +27,7 @@ export default function EventCard({ event }) {
       if (confirm("Are you sure you want to delete this event?")) {
           try {
             await deleteEvent(eventId)
-            router.refresh()
+            onDelete(eventId)
           }
           catch (err) {
             console.error("Error deleting event:", err)
@@ -35,6 +35,7 @@ export default function EventCard({ event }) {
           }
       }
     }
+    
     const handleEdit = async (eventId) => {
       router.push(`/events/edit/${eventId}`)
     }

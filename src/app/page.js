@@ -66,6 +66,10 @@ export default function Home() {
     })
   }
 
+  const handleDeleteSuccess = (deletedId) => {
+  setEvents(prev => prev.filter(event => event.id !== deletedId))
+  }
+
   return (
     <div className="p-4 bg-zinc-900 min-h-screen ">
       {(events.length !== 0) &&<h1 className="text-4xl font-bold mb-4 text-center">Events</h1>}
@@ -78,7 +82,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-            {sorted.map((event) => <EventCard key={event.id} event={event} />)}
+            {sorted.map((event) => <EventCard key={event.id} event={event} onDelete={handleDeleteSuccess} />)}
              {!title && <NewEvent />}
              {title && <BackToHomeCard />}
           </div>

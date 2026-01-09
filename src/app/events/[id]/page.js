@@ -1,10 +1,47 @@
+"use client"
+
 import { fetchEventById } from "@/app/api/api";
+import Loading from "@/app/components/Loading";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default async function EventPage({ params }) {
-  const { id } = await params;
+export default function EventPage() {
+  const params = useParams();
+  const id = params["id"]
+  const [event , setEvent] = useState(null)
+  const [load , setLoad] = useState(false)
 
-  const event = await fetchEventById(id);
+  useEffect(() => {
+    const getEventDetails = async () => {
+      try {
+        setLoad(true)
+        setEvent(await fetchEventById(id))
+      }
+      catch (err) {
+        console.error("Error fetching event:", err);
+        setEvent(null)
+      }
+      finally {
+        setLoad(false)
+      }
+    }
+    getEventDetails()
+  } , [id])
+
+  if (load) {
+    return <Loading />
+  }
+
+  if (!event){
+    return (
+      <div className="p-4 min-h-screen flex items-center justify-center">
+        <div className="bg-zinc-900 bg-center text-center text-3xl rounded-2xl w-xl p-6 mx-auto border-2">
+          <p className="text-red-400 text-center text-5xl ">Event Not Found</p>
+        </div>
+      </div>
+    )
+  }
 
   const current_date = new Date()
   const event_date = new Date(event.date)
@@ -20,14 +57,12 @@ export default async function EventPage({ params }) {
   const checkCompleted = status.includes("Completed")
 
   return (
-    <div className="bg-zinc-700 p-4 min-h-screen">
+    <div className="bg-zinc-900 text-center p-4 h-screen">
 
       <h2 className="text-5xl font-semibold text-white text-center">{event.title}</h2>
 
-      <br />
-
-      <div className="bg-zinc-900 bg-center text-center text-3xl rounded-2xl w-xl p-6 mx-auto">
-        <p className="text-zinc-400 mt-2">{event.description}</p>
+      <div className="bg-slate-800 text-left rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3 text-3xl">
+        <p className="text-zinc-400 mt-2 text-center">{event.description}</p>
         <p className="mt-2">
           <strong>Venue:</strong> {event.venue}
         </p>
@@ -44,9 +79,7 @@ export default async function EventPage({ params }) {
 
       <h2 className="text-5xl font-semibold text-white text-center">Additional Information</h2>
 
-      <br />
-
-      <div className="bg-zinc-900 bg-center text-center text-3xl rounded-2xl w-fit p-7 mx-auto">
+      <div className="bg-slate-800 text-left rounded-2xl w-fit p-6 mx-auto mt-4 space-y-3 text-3xl">
         <p className="mt-2">
           <strong>Created At:</strong> {event.created_at}
         </p>
