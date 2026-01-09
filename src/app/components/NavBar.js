@@ -2,13 +2,20 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { logout } from "../api/api"
 
 export function NavBar() {
 
     const [searchTerm , setSearchTerm] = useState("")
     const router = useRouter()
+    const [loggedIn , setLoggedIn] = useState(false)
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken')
+        setLoggedIn(!!token)
+    } , [])
+    
 
     const handleSearch = async (e) => {
         e.preventDefault()
@@ -20,6 +27,7 @@ export function NavBar() {
     const handleLogout = async (e) => {
         e.preventDefault()
         logout()
+        setLoggedIn(false)
         router.push("/auth/")
     }
 
@@ -40,7 +48,7 @@ export function NavBar() {
         Create New Event
         </Link>
 
-        <button className="rounded bg-red-400 py-2 p-4" onClick={(e) => handleLogout(e)}>Logout</button>
+        {loggedIn && <button className="rounded bg-red-400 py-2 p-4" onClick={(e) => handleLogout(e)}>Logout</button>}
         </div>
 
         </div>
