@@ -44,10 +44,10 @@ export default function EventCard({ event, onDelete }) {
     <div className="relative">
       {/* Buttons */}
       <div className="absolute top-3 right-3 flex gap-2 z-10">
-        <button onClick={(e) => {e.stopPropagation(); console.log("Edit:", event.id); handleEdit(event.id)}} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
+        <button onClick={(e) => {e.preventDefault();e.stopPropagation(); console.log("Edit:", event.id); handleEdit(event.id)}} className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
           <Image src="Edit.svg" alt="Edit" width={25} height={25} className="inline-block mr-1 content-center"/>
         </button>
-        <button onClick={(e) => {e.stopPropagation(); console.log("Delete:", event.id); handleDelete(event.id)}} className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">
+        <button onClick={(e) => {e.preventDefault();e.stopPropagation(); console.log("Delete:", event.id); handleDelete(event.id)}} className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded">
           <Image src="Delete.svg" alt="Delete" width={25} height={25} className="inline-block mr-1 content-center"/>
         </button>
       </div>
