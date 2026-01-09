@@ -1,100 +1,85 @@
 "use client"
 
-import { fetchEventById } from "@/app/api/api";
-import Loading from "@/app/components/Loading";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { fetchEventById, updateEvent } from "@/app/api/api"
+import Loading from "@/app/components/Loading"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { use, useEffect, useState } from "react"
 
-export default function EventPage() {
-  const params = useParams();
-  const id = params["id"]
-  const [event , setEvent] = useState(null)
-  const [load , setLoad] = useState(false)
+export default function EditEvent({params}) {
 
-  useEffect(() => {
-    const getEventDetails = async () => {
-      try {
-        setLoad(true)
-        setEvent(await fetchEventById(id))
-      }
-      catch (err) {
-        console.error("Error fetching event:", err);
-        setEvent(null)
-      }
-      finally {
-        setLoad(false)
-      }
+    const { id } = use(params)
+    const router = useRouter()
+    const [event , setEvent] = useState(null)
+    const [load , setLoad] = useState(false)
+
+    useEffect(() => {
+        const getEvent = async () => {
+            try {
+                setLoad(true)
+                setEvent(await fetchEventById(id))
+            } catch (err) {
+                console.error("Failed to fetch event:", err)
+                setEvent(null)
+            }
+            finally{
+                setLoad(false)
+            }
+        }
+        getEvent()
+    } , [])
+
+    if(load) {
+        return <Loading />
     }
-    getEventDetails()
-  } , [id])
 
-  if (load) {
-    return <Loading />
-  }
-
-  if (!event){
-    return (
-      <div className="p-4 min-h-screen flex items-center justify-center">
-        <div className="bg-zinc-900 bg-center text-center text-3xl rounded-2xl w-xl p-6 mx-auto border-2">
-          <p className="text-red-400 text-center text-5xl ">Event Not Found</p>
+    if(!event) {
+        return (
+        <div className="p-4 min-h-screen flex items-center justify-center ">
+            <div className="bg-zinc-900 bg-center text-center text-3xl rounded-2xl w-xl p-6 mx-auto border-2">
+                <p className="text-red-400 text-center text-5xl ">Event Not Found</p>
+            </div> 
         </div>
-      </div>
+        )
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData(e.target)
+
+        const editEvent = {
+            title: formData.get("title"),
+            description: formData.get("description"),
+            venue: formData.get("venue"),
+            date: formData.get("date"),
+            time: formData.get("time"),
+        }
+
+        try {
+            await updateEvent(id , editEvent)
+            router.push("/") // Redirect to home after success
+        } catch (err) {
+            console.error("Failed to create event:", err)
+            alert("Failed to update event. Please try again.")
+        }
+    }
+
+    return (
+        <div className="bg-zinc-900 text-center p-4 h-screen">
+            <h2 className="text-white text-3xl">Edit Event</h2>
+
+            <form className="bg-slate-800 rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3" onSubmit={handleSubmit}>
+                <input type="text" name="title" placeholder="Title" className="w-full p-2 rounded " required defaultValue={event.title}/>
+                <input type="text" name="description" placeholder="Description" className="w-full p-2 rounded " required defaultValue={event.description}/>
+                <input type="text" name="venue" placeholder="Venue" className="w-full p-2 rounded "required defaultValue={event.venue} />
+                <input type="date" name="date" className="w-full p-2 rounded " required defaultValue={event.date} />
+                <input type="time" name="time" className="w-full p-2 rounded " required defaultValue={event.time} />
+                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full">Save Event</button>
+                <Link href={"/"}>
+                <div className="bg-white text-black rounded p-3 content-center mx-auto mt-4 w-full"><p>Back To Home</p></div>
+                </Link>
+            </form>
+        </div>
     )
-  }
-
-  const current_date = new Date()
-  const event_date = new Date(event.date)
-  let status = "Upcoming"
-
-  if (event_date < current_date) {
-    status = " Completed"
-  } else if (event_date.toDateString() === current_date.toDateString()) {
-    status = " Today"
-  } else {
-    status = " Upcoming in " + Math.ceil((event_date - current_date) / (1000 * 60 * 60 * 24)) + " day(s)"
-  }
-  const checkCompleted = status.includes("Completed")
-
-  return (
-    <div className="bg-zinc-900 text-center p-4 h-screen">
-
-      <h2 className="text-5xl font-semibold text-white text-center">{event.title}</h2>
-
-      <div className="bg-slate-800 text-left rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3 text-3xl">
-        <p className="text-zinc-400 mt-2 text-center">{event.description}</p>
-        <p className="mt-2">
-          <strong>Venue:</strong> {event.venue}
-        </p>
-        <p>
-          <strong>Date:</strong> {event.date}
-          <br />
-          <strong>Time:</strong> {event.time}
-          <br />
-          <strong>Status:</strong> <strong className={checkCompleted ? "text-green-500" : "text-yellow-500"}>{status}</strong>
-        </p>
-      </div>
-
-      <br />
-
-      <h2 className="text-5xl font-semibold text-white text-center">Additional Information</h2>
-
-      <div className="bg-slate-800 text-left rounded-2xl w-fit p-6 mx-auto mt-4 space-y-3 text-3xl">
-        <p className="mt-2">
-          <strong>Created At:</strong> {event.created_at}
-        </p>
-        <p className="mt-2">
-          <strong>Updated At:</strong> {event.updated_at}
-        </p>
-      </div>
-
-      
-      <Link href={"/"}>
-      <div className="bg-white text-black rounded p-3 content-center mx-auto mt-4 w-fit"><p>Back To Home</p></div>
-      </Link>
-      
-      
-    </div>
-  )
-  
 }
