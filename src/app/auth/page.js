@@ -37,7 +37,7 @@ export default function AuthPage(){
     }
 
     return (
-        <div className="bg-zinc-900 text-center p-4 h-screen">
+        <div className="bg-zinc-900 text-center p-4 h-screen text-gray-400">
             <h2 className="text-white text-3xl">{logi && "Login"}{!logi && "Register"}</h2>
 
             <form className="bg-slate-800 rounded-2xl w-xl p-6 mx-auto mt-4 space-y-3" onSubmit={(e) => handleSubmit(e)}>
