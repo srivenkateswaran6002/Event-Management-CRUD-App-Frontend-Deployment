@@ -57,7 +57,7 @@ export default function EventPage() {
   const checkCompleted = status.includes("Completed")
 
   return (
-    <div className="bg-zinc-900 text-center p-4 h-screen">
+    <div className="bg-zinc-900 text-center p-4 h-screen text-gray-400">
 
       <h2 className="text-5xl font-semibold text-white text-center">{event.title}</h2>
 
